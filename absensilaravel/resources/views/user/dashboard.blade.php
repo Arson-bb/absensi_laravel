@@ -1,39 +1,38 @@
-@extends('layouts.app') <!-- Gunakan layout utama jika ada -->
+@extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <!-- <h1>Dashboard Admin</h1> -->
-    <!-- <h2>Dashboard Absensi</h2> -->
+<div class="max-w-2xl mx-auto py-6 px-4">
+    <h2 class="text-2xl font-semibold mb-6">Absensi</h2>
 
-    <!-- @if (session('success'))
-        <div style="color: green">{{ session('success') }}</div>
+                <div class="space-x-2 mb-6">
+                <a href="{{ url('/absen/riwayat') }}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Riwayat Absensi</a>
+            </div>
+    @if (session('success'))
+        <div class="bg-green-100 text-green-800 p-2 rounded mb-4">
+            {{ session('success') }}
+        </div>
     @endif
-    @if (session('error'))
-        <div style="color: red">{{ session('error') }}</div>
-    @endif
 
-    <form action="/absen/masuk" method="POST" style="margin-bottom: 10px;">
-        @csrf
-        <button type="submit">Absen Masuk</button>
-    </form>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <form action="{{ url('/absen/   masuk') }}" method="POST" class="bg-white border p-4 rounded shadow">
+            @csrf
+            <h3 class="font-semibold mb-2">Absen Masuk</h3>
+            <div class="mb-3">
+                <label for="keterangan_masuk" class="block text-sm font-medium">Keterangan</label>
+                <input type="text" name="keterangan_masuk" id="keterangan_masuk" class="w-full border rounded px-3 py-2" placeholder="Opsional">
+            </div>
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Absen Masuk</button>
+        </form>
 
-    <form action="/absen/keluar" method="POST">
-        @csrf
-        <button type="submit">Absen Keluar</button>
-    </form>
-
-    <br>
-    <a href="/absen/riwayat">Lihat Riwayat Absensi</a>
-</div> -->
-
-<div class="max-w-2xl mx-auto p-4">
-    <h1 class="text-xl font-bold mb-4">Dashboard User</h1>
-
-    <ul class="space-y-2">
-        <li><a href="/user/dashboard" class="text-blue-600 hover:underline">Dashboard Absensi</a></li>
-        <li><form method="POST" action="/absen/masuk">@csrf <button class="text-blue-600 hover:underline">Absen Masuk</button></form></li>
-        <li><form method="POST" action="/absen/keluar">@csrf <button class="text-blue-600 hover:underline">Absen Keluar</button></form></li>
-        <li><a href="/absen/riwayat" class="text-blue-600 hover:underline">Lihat Riwayat Absensi</a></li>
-    </ul>
+        <form action="{{ url('/absen/keluar') }}" method="POST" class="bg-white border p-4 rounded shadow">
+            @csrf
+            <h3 class="font-semibold mb-2">Absen Keluar</h3>
+            <div class="mb-3">
+                <label for="keterangan_keluar" class="block text-sm font-medium">Keterangan</label>
+                <input type="text" name="keterangan_keluar" id="keterangan_keluar" class="w-full border rounded px-3 py-2" placeholder="Opsional">
+            </div>
+            <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Absen Keluar</button>
+        </form>
+    </div>
 </div>
 @endsection

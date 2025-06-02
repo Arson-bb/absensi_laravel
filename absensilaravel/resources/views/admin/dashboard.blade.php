@@ -3,6 +3,11 @@
 @section('content')
 <div class="max-w-7xl mx-auto p-4">
     <h1 class="text-2xl font-bold mb-4">Admin Dashboard</h1>
+            <!-- Tombol Navigasi -->
+            <div class="space-x-2 mb-6">
+                <a href="{{ route('admin.users.index') }}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Kelola User</a>
+                <a href="{{ url('/absen/riwayat') }}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Riwayat Absensi</a>
+            </div>
 
     <table class="w-full border border-gray-300 rounded-md overflow-hidden">
         <thead class="bg-gray-100">
@@ -30,6 +35,7 @@
     </table>
 </div>
 @endsection
+
 
 
 
