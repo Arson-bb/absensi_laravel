@@ -10,7 +10,7 @@
         </div>
     @endif
 
-    <table class="w-full border border-gray-300 rounded">
+    <table class="w-full border border-gray-300 rounded grid grid-cols-1 md:grid-cols-2 gap-4">
         <thead class="bg-gray-100">
             <tr>
                 <th class="px-4 py-2">Tanggal</th>

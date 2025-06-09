@@ -51,6 +51,9 @@ Route::middleware(['auth', 'checkrole:admin'])->group(function () {
     Route::delete('/admin/users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
 });
 
+Route::get('/admin/absensi', [AbsensiController::class, 'rekap'])
+    ->name('admin.absensi.rekap')
+    ->middleware(['auth', 'checkrole:admin']);
 
 Route::get('/debug', function () {
     return 'Semua routing OK!';

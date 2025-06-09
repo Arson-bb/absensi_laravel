@@ -1,27 +1,38 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <h2>Riwayat Absensi</h2>
-    <table border="1" cellpadding="5">
-        <tr>
-            <th>Tanggal</th>
-            <th>Jam Masuk</th>
-            <th>Jam Keluar</th>
-        </tr>
-        @foreach($riwayat as $absen)
-            <tr>
-                <td>{{ $absen->tanggal }}</td>
-                <td>{{ $absen->jam_masuk ?? '-' }}</td>
-                <td>{{ $absen->jam_keluar ?? '-' }}</td>
-            </tr>
-        @endforeach
-    </table>
+<div class="max-w-4xl mx-auto px-4 py-6">
+    <h1 class="text-xl font-semibold mb-4">Riwayat Absensi</h1>
 
-    <br>
-    <a href="/user/dashboard">Kembali ke Dashboard</a>
+    <div class="overflow-x-auto rounded shadow bg-white">
+        <table class="min-w-full border text-sm">
+            <thead class="bg-gray-100 border-b">
+                <tr class="text-left">
+                    <th class="px-4 py-2">Tanggal</th>
+                    <th class="px-4 py-2">Jam Masuk</th>
+                    <th class="px-4 py-2">Jam Keluar</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse ($riwayat as $a)
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="px-4 py-2">{{ $a->tanggal }}</td>
+                        <td class="px-4 py-2">{{ $a->jam_masuk }}</td>
+                        <td class="px-4 py-2">{{ $a->jam_keluar ?? '-' }}</td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="3" class="text-center px-4 py-2 text-gray-500">Belum ada data absensi.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mt-6">
+        <a href="{{ route('dashboard') }}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            Kembali ke Dashboard
+        </a>
+    </div>
 </div>
-
-
-
 @endsection

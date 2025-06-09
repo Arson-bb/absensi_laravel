@@ -6,8 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Absensi extends Model
 {
+    protected $fillable = ['user_id', 'tanggal', 'jam_masuk', 'jam_keluar', 'keterangan'];
         public function user()
     {
         return $this->belongsTo(User::class);
     }
 }
+
