@@ -6,57 +6,64 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AbsensiController;
 use Illuminate\Support\Facades\Route;
 
+// Redirect root ke dashboard sesuai role
 Route::get('/', function () {
-    if (auth()->check()) {
-        return redirect('/dashboard');
-    } else {
-        return redirect('/login');
-    }
+    return auth()->check() ? redirect('/dashboard') : redirect('/login');
 });
 
+// Redirect /dashboard ke dashboard admin/user
 Route::get('/dashboard', function () {
     $role = auth()->user()->role->name;
     return $role === 'admin'
-        ? redirect('/admin/dashboard')
-        : redirect('/user/dashboard');
+        ? redirect()->route('admin.absensi.rekap')
+        : redirect()->route('user.dashboard');
 })->middleware(['auth'])->name('dashboard');
 
 
-Route::middleware(['auth', 'checkrole:admin'])->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'index']);
+
+// -------------------- ADMIN ROUTES --------------------
+Route::middleware(['auth', 'checkrole:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
+
+    // Manajemen user
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+    Route::post('/users', [UserController::class, 'store'])->name('users.store');
+    Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+
+    // Rekap & export absensi
+    Route::get('/absensi', [AbsensiController::class, 'rekap'])->name('absensi.rekap');
+    Route::get('/absensi/export', [AdminController::class, 'export'])->name('absensi.export');
+    
 });
 
-Route::middleware(['auth', 'checkrole:user'])->group(function () {
-    Route::get('/user/dashboard', function () {
+
+// -------------------- USER ROUTES --------------------
+Route::middleware(['auth', 'checkrole:user'])->prefix('user')->name('user.')->group(function () {
+    Route::get('/dashboard', function () {
         return view('user.dashboard');
-    });
+    })->name('dashboard');
 
-    Route::post('/absen/masuk', [AbsensiController::class, 'checkIn']);
-    Route::post('/absen/keluar', [AbsensiController::class, 'checkOut']);
-    Route::get('/absen/riwayat', [AbsensiController::class, 'riwayat']);
+    Route::post('/absen/masuk', [AbsensiController::class, 'checkIn'])->name('absen.masuk');
+    Route::post('/absen/keluar', [AbsensiController::class, 'checkOut'])->name('absen.keluar');
+    Route::get('/absen/riwayat', [AbsensiController::class, 'riwayat'])->name('absen.riwayat');
 });
 
+
+// -------------------- PROFIL --------------------
 Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware(['auth', 'checkrole:admin'])->group(function () {
-    Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users.index');
-    Route::get('/admin/users/create', [UserController::class, 'create'])->name('admin.users.create');
-    Route::post('/admin/users', [UserController::class, 'store'])->name('admin.users.store');
-    Route::get('/admin/users/{user}/edit', [UserController::class, 'edit'])->name('admin.users.edit');
-    Route::put('/admin/users/{user}', [UserController::class, 'update'])->name('admin.users.update');
-    Route::delete('/admin/users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
-});
 
-Route::get('/admin/absensi', [AbsensiController::class, 'rekap'])
-    ->name('admin.absensi.rekap')
-    ->middleware(['auth', 'checkrole:admin']);
-
+// -------------------- DEBUG --------------------
 Route::get('/debug', function () {
     return 'Semua routing OK!';
 });
 
+// -------------------- AUTH --------------------
 require __DIR__.'/auth.php';

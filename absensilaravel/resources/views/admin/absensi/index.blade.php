@@ -26,7 +26,7 @@
                     <th class="px-4 py-2 text-left">Nama</th>
                     <th class="px-4 py-2 text-left">Tanggal</th>
                     <th class="px-4 py-2 text-left">Jam Masuk</th>
-                    <th class="px-4 py-2 text-left">Jam Keluar</th>
+                    <th class="px-4 py-2 text-left">Jam Keluar</th>             
                 </tr>
             </thead>
             <tbody>
@@ -44,6 +44,12 @@
                 @endforelse
             </tbody>
         </table>
+        <br>
     </div>
+    <form action="{{ route('admin.absensi.export') }}" method="GET" class="mb-4 flex items-center space-x-2">
+    <input type="date" name="tanggal" class="border px-2 py-1 rounded" required>
+    <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Export Excel</button>
+</form>
+
 </div>
 @endsection

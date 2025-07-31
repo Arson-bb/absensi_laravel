@@ -22,12 +22,15 @@ public function checkIn(Request $request)
 
     // dd(Auth::id(), \App\Models\User::find(Auth::id()));
 
-    $existing = Absensi::where('user_id', Auth::id())
-    ->where('tanggal', now()->toDateString())
-    ->first();
+    $hariIni = now()->toDateString(); // contoh: 2025-07-27
 
-    if ($existing) {
-        return redirect()->back()->with('error', 'Anda sudah absen masuk hari ini.');
+    $cekAbsen = Absensi::where('user_id', auth()->id())
+                    ->whereDate('tanggal', $hariIni)
+                    ->first();
+
+    if ($cekAbsen && $cekAbsen->jam_masuk !== null) {
+        return redirect()->back()->with('error', 'Anda sudah melakukan absen masuk hari ini.');
+
     }
 
     Absensi::create([
@@ -55,21 +58,27 @@ public function checkOut(Request $request)
         'keterangan_keluar' => 'nullable|string|max:255',
     ]);
 
-    $absen = Absensi::where('user_id', Auth::id())
-        ->where('tanggal', now()->toDateString()) 
-        ->latest()
-        ->first();
+    $hariIni = now()->toDateString();
 
-    if ($absen && !$absen->jam_keluar) {
-        $absen->update([
-            'jam_keluar' => now()->format('H:i:s'),
-            'keterangan' => $absen->keterangan . ' | ' . $request->keterangan_keluar,
-        ]);
+    $cekAbsen = Absensi::where('user_id', auth()->id())
+                    ->whereDate('tanggal', $hariIni)
+                    ->first();
 
-        return redirect()->back()->with('success', 'Absen keluar berhasil.');
+    if (!$cekAbsen || $cekAbsen->jam_masuk === null) {
+        return redirect()->back()->with('error', 'Anda belum melakukan absen masuk.');
     }
 
-    return redirect()->back()->with('success', 'Tidak ditemukan absen masuk hari ini atau sudah absen keluar.');
+    if ($cekAbsen->jam_keluar !== null) {
+        return redirect()->back()->with('error', 'Anda sudah melakukan absen keluar hari ini.');
+    }
+
+    // Jika lolos, update jam_keluar:
+    $cekAbsen->update([
+        'jam_keluar' => now(),
+        'keterangan_keluar' => $request->keterangan_keluar,
+    ]);
+
+    return back()->with('success', 'Absen keluar berhasil.');
 }
 
 public function rekap(Request $request)

@@ -10,7 +10,13 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
-{
+{   
+        public function show()
+    {
+        $user = auth()->user();
+        return view('user.profile', compact('user'));
+    }
+
     /**
      * Display the user's profile form.
      */

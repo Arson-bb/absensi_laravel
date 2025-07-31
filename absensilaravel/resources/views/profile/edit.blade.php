@@ -1,29 +1,19 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Profile') }}
-        </h2>
-    </x-slot>
+@extends('layouts.app')
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-profile-information-form')
-                </div>
-            </div>
+@section('content')
+<div class="max-w-xl mx-auto py-6 px-4">
+    <h2 class="text-2xl font-bold mb-4">Profil Saya</h2>
 
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-password-form')
-                </div>
-            </div>
+    <div class="bg-white p-4 shadow rounded space-y-2">
+        <p><strong>Nama:</strong> {{ $user->name }}</p>
+        <p><strong>Email:</strong> {{ $user->email }}</p>
+        <p><strong>Role:</strong> {{ $user->role->name }}</p>
+        <p><strong>Tanggal Gabung:</strong> {{ $user->created_at->format('d M Y') }}</p>
+        <p><strong>Status Hari Ini:</strong> 
+    {{ $user->absensis()->whereDate('tanggal', now())->exists() ? 'Sudah Absen' : 'Belum Absen' }}
+</p>
 
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.delete-user-form')
-                </div>
-            </div>
-        </div>
     </div>
-</x-app-layout>
+</div>
+
+@endsection

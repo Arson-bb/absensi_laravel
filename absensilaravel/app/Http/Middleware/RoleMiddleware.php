@@ -9,11 +9,11 @@ use App\Http\Middleware\CheckRole;
 
 class RoleMiddleware
 {
-    public function handle(Request $request, Closure $next, $role): Response
-    {
-        if (auth()->check() && auth()->user()->role->name === $role) {
-            return $next($request);
-        }
-        abort(403, 'Akses ditolak.');
+public function handle($request, Closure $next, ...$roles)
+{
+    if (!in_array(auth()->user()->role->name, $roles)) {
+        abort(403);
     }
+    return $next($request);
+}
 }

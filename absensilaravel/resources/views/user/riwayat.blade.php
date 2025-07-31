@@ -8,16 +8,18 @@
         <table class="min-w-full border text-sm">
             <thead class="bg-gray-100 border-b">
                 <tr class="text-left">
-                    <th class="px-4 py-2">Tanggal</th>
-                    <th class="px-4 py-2">Jam Masuk</th>
-                    <th class="px-4 py-2">Jam Keluar</th>
+                <th class="px-4 py-2">Tanggal</th>
+                <th class="px-4 py-2">Status</th>
+                <th class="px-4 py-2">Jam Masuk</th>
+                <th class="px-4 py-2">Jam Keluar</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse ($riwayat as $a)
                     <tr class="border-b hover:bg-gray-50">
                         <td class="px-4 py-2">{{ $a->tanggal }}</td>
-                        <td class="px-4 py-2">{{ $a->jam_masuk }}</td>
+                        <td class="px-4 py-2">{{ ucfirst($a->status) }}</td>
+                        <td class="px-4 py-2">{{ $a->jam_masuk ?? '-' }}</td>
                         <td class="px-4 py-2">{{ $a->jam_keluar ?? '-' }}</td>
                     </tr>
                 @empty
