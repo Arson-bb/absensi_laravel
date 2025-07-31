@@ -1,0 +1,45 @@
+services:
+  - type: web
+    name: absensi-laravel
+    env: php
+    plan: free
+    buildCommand: |
+      composer install --no-dev --optimize-autoloader
+      php artisan key:generate
+      php artisan migrate --force
+      php artisan storage:link
+    startCommand: php artisan serve --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_KEY
+        generateValue: true
+      - key: APP_URL
+        value: https://absensi-laravel.onrender.com
+      - key: DB_CONNECTION
+        value: mysql
+      - key: DB_HOST
+        fromDatabase:
+          name: absensi-db
+          property: host
+      - key: DB_PORT
+        value: 3306
+      - key: DB_DATABASE
+        fromDatabase:
+          name: absensi-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: absensi-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: absensi-db
+          property: password
+
+databases:
+  - name: absensi-db
+    databaseName: absensi
+    user: absensi
