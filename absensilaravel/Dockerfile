@@ -1,4 +1,4 @@
-FROM php:8.2.12-cli-alpine3.19
+FROM php:8.2.12-cli-alpine
 
 RUN apk add --no-cache \
     git unzip libzip-dev zlib-dev \
