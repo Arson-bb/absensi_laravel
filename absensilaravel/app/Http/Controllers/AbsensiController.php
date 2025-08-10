@@ -20,9 +20,8 @@ public function checkIn(Request $request)
         'keterangan_masuk' => 'nullable|string|max:255',
     ]);
 
-    // dd(Auth::id(), \App\Models\User::find(Auth::id()));
 
-    $hariIni = now()->toDateString(); // contoh: 2025-07-27
+    $hariIni = now()->toDateString();
 
     $cekAbsen = Absensi::where('user_id', auth()->id())
                     ->whereDate('tanggal', $hariIni)
@@ -40,15 +39,7 @@ public function checkIn(Request $request)
         'tanggal' => now()->toDateString(),
     ]);
 
-    // $todayAbsen = Absensi::where('user_id', Auth::id())
-    //     ->whereDate('tanggal', now()->toDateString())
-    //     ->first();
 
-    // if ($todayAbsen && !$todayAbsen->jam_keluar) {
-    //     return redirect()->back()->with('error', 'Anda belum melakukan absen keluar hari ini.');
-    // }
-
-    
     return redirect()->back()->with('success', 'Absen masuk berhasil.');
 }
 
@@ -72,7 +63,6 @@ public function checkOut(Request $request)
         return redirect()->back()->with('error', 'Anda sudah melakukan absen keluar hari ini.');
     }
 
-    // Jika lolos, update jam_keluar:
     $cekAbsen->update([
         'jam_keluar' => now(),
         'keterangan_keluar' => $request->keterangan_keluar,

@@ -6,12 +6,10 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AbsensiController;
 use Illuminate\Support\Facades\Route;
 
-// Redirect root ke dashboard sesuai role
 Route::get('/', function () {
     return auth()->check() ? redirect('/dashboard') : redirect('/login');
 });
 
-// Redirect /dashboard ke dashboard admin/user
 Route::get('/dashboard', function () {
     $role = auth()->user()->role->name;
     return $role === 'admin'
@@ -21,11 +19,9 @@ Route::get('/dashboard', function () {
 
 
 
-// -------------------- ADMIN ROUTES --------------------
 Route::middleware(['auth', 'checkrole:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
 
-    // Manajemen user
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
     Route::post('/users', [UserController::class, 'store'])->name('users.store');
@@ -33,14 +29,12 @@ Route::middleware(['auth', 'checkrole:admin'])->prefix('admin')->name('admin.')-
     Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 
-    // Rekap & export absensi
     Route::get('/absensi', [AbsensiController::class, 'rekap'])->name('absensi.rekap');
     Route::get('/absensi/export', [AdminController::class, 'export'])->name('absensi.export');
     
 });
 
 
-// -------------------- USER ROUTES --------------------
 Route::middleware(['auth', 'checkrole:user'])->prefix('user')->name('user.')->group(function () {
     Route::get('/dashboard', function () {
         return view('user.dashboard');
@@ -52,7 +46,6 @@ Route::middleware(['auth', 'checkrole:user'])->prefix('user')->name('user.')->gr
 });
 
 
-// -------------------- PROFIL --------------------
 Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -60,10 +53,8 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
-// -------------------- DEBUG --------------------
 Route::get('/debug', function () {
     return 'Semua routing OK!';
 });
 
-// -------------------- AUTH --------------------
 require __DIR__.'/auth.php';
