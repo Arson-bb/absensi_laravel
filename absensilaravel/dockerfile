@@ -9,14 +9,11 @@ RUN docker-php-ext-configure gd --with-jpeg --with-freetype \
  && docker-php-ext-install gd
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-
 WORKDIR /app
 
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 COPY . .
-
-RUN php -r "opcache_reset();" 2>/dev/null || true
 
 RUN adduser -D -u 10001 appuser && chown -R appuser:appuser /app
 USER appuser
