@@ -1,4 +1,4 @@
-FROM php:8.2-cli-alpine
+FROM php:8.2.12-cli-alpine3.19
 
 RUN apk add --no-cache \
     git unzip libzip-dev zlib-dev \
@@ -8,16 +8,10 @@ RUN apk add --no-cache \
  && docker-php-ext-install gd
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-
 WORKDIR /app
-
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --optimize-autoloader --no-interaction
-
 COPY . .
-
-RUN adduser -D -u 10001 appuser && chown -R appuser:appuser /app
-USER appuser
 
 CMD php artisan key:generate --force \
  && php artisan migrate --force \
