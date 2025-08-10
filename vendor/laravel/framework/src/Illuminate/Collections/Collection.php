@@ -165,6 +165,10 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
             $results[$key] = $values;
         }
 
+        if (! $results) {
+            return new static;
+        }
+
         return new static(array_replace(...$results));
     }
 
@@ -222,6 +226,19 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
     public function doesntContain($key, $operator = null, $value = null)
     {
         return ! $this->contains(...func_get_args());
+    }
+
+    /**
+     * Determine if an item is not contained in the enumerable, using strict comparison.
+     *
+     * @param  mixed  $key
+     * @param  mixed  $operator
+     * @param  mixed  $value
+     * @return bool
+     */
+    public function doesntContainStrict($key, $operator = null, $value = null)
+    {
+        return ! $this->containsStrict(...func_get_args());
     }
 
     /**
@@ -1232,7 +1249,7 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
     /**
      * Get and remove the first N items from the collection.
      *
-     * @param  int  $count
+     * @param  int<0, max>  $count
      * @return static<int, TValue>|TValue|null
      *
      * @throws \InvalidArgumentException
@@ -1725,8 +1742,12 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
     /**
      * Transform each item in the collection using a callback.
      *
-     * @param  callable(TValue, TKey): TValue  $callback
+     * @template TMapValue
+     *
+     * @param  callable(TValue, TKey): TMapValue  $callback
      * @return $this
+     *
+     * @phpstan-this-out static<TKey, TMapValue>
      */
     public function transform(callable $callback)
     {
@@ -1838,7 +1859,7 @@ class Collection implements ArrayAccess, CanBeEscapedWhenCastToString, Enumerabl
     /**
      * Count the number of items in the collection.
      *
-     * @return int
+     * @return int<0, max>
      */
     public function count(): int
     {
