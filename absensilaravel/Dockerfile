@@ -1,26 +1,26 @@
 FROM php:8.2.12-cli-alpine
 
 ENV COMPOSER_ALLOW_SUPERUSER=1 \
-    COMPOSER_NO_INTERACTION=1 \
-    COMPOSER_MEMORY_LIMIT=-1
+    COMPOSER_MEMORY_LIMIT=-1 \
+    PHP_OPCACHE_VALIDATE_TIMESTAMPS=0
 
 RUN apk add --no-cache \
-    git unzip libzip-dev zlib-dev \
+    git unzip build-base autoconf \
+    libzip-dev zlib-dev \
     libpng-dev freetype-dev libjpeg-turbo-dev \
-    libxml2-dev
+    libxml2-dev \
+    postgresql-dev
 
-RUN docker-php-ext-install pdo_mysql zip mbstring exif \
- && docker-php-ext-configure gd --with-jpeg --with-freetype \
- && docker-php-ext-install gd \
- && docker-php-ext-install xml
+
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+ && docker-php-ext-install -j$(nproc) gd zip mbstring xml exif pdo_pgsql
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
 
 COPY composer.json composer.lock ./
-RUN php -v && php -m | sort && composer --version \
- && composer install --no-dev --optimize-autoloader -vvv
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 COPY . .
 
